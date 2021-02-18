@@ -65,4 +65,7 @@ export default makeStyles((theme) => ({
       width: '20ch',
     },
   },
+  logo: {
+    marginRight: '.25rem',
+  },
 }));
