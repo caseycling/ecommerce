@@ -14,7 +14,7 @@ import { commerce } from '../../../lib/commerce';
 
 import FormInput from './CustomTextField';
 
-const AddressForm = ({ checkoutToken }) => {
+const AddressForm = ({ checkoutToken, next }) => {
   const [shippingCountries, setShippingCountries] = useState([]);
   const [shippingCountry, setShippingCountry] = useState('');
   const [shippingSubdivisions, setShippingSubdivisions] = useState([]);
@@ -45,8 +45,6 @@ const AddressForm = ({ checkoutToken }) => {
     label: `${option.description} - (${option.price.formatted_with_symbol})`,
   }));
 
-  console.log(countries);
-
   //Get shipping countries
   const fetchShippingCountries = async (checkoutTokenId) => {
     const { countries } = await commerce.services.localeListShippingCountries(
@@ -76,7 +74,7 @@ const AddressForm = ({ checkoutToken }) => {
       checkoutTokenId,
       { country, region }
     );
-
+    console.log(options);
     setShippingOptions(options);
     setShippingOption(options[0].id);
   };
@@ -97,14 +95,22 @@ const AddressForm = ({ checkoutToken }) => {
       );
   }, [shippingSubdivision]);
 
-  console.log(shippingSubdivisions);
   return (
     <>
       <Typography variant='h6' gutterBottom>
         Shipping Address
       </Typography>
       <FormProvider {...methods}>
-        <form onSubmit=''>
+        <form
+          onSubmit={methods.handleSubmit((data) =>
+            next({
+              ...data,
+              shippingCountry,
+              shippingSubdivision,
+              shippingOption,
+            })
+          )}
+        >
           <Grid container spacing={2}>
             <FormInput name='firstName' label='First Name' />
             <FormInput name='lastName' label='Last Name' />
